@@ -1,0 +1,5 @@
+MyCompany\Entity\UserAccount:
+    johndoe:
+        __construct: ["john@doe.com"]
+        __calls:
+            - defineCredentials: ["12345678"]
