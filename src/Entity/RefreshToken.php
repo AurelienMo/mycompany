@@ -2,13 +2,12 @@
 
 namespace MyCompany\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\Table;
 use Gesdinet\JWTRefreshTokenBundle\Entity\RefreshToken as BaseRefreshToken;
 
-/**
- * @ORM\Entity
- * @ORM\Table("refresh_tokens")
- */
+#[Table(name: "refresh_tokens")]
+#[Entity]
 class RefreshToken extends BaseRefreshToken
 {
 }
