@@ -6,3 +6,4 @@
 
 - Master brand :
 [![codecov](https://codecov.io/gh/AurelienMo/mycompany/branch/master/graph/badge.svg?token=1E3V8OD3M3)](https://codecov.io/gh/AurelienMo/mycompany)
+
