@@ -11,7 +11,7 @@ class RegistrationTest extends AbstractWebtestCase
     {
         $response = $this->postRequest('/api/registration', []);
         $content = $this->getContentResponse($response->getContent());
-        $this->assertEquals("toto", $content);
+        $this->assertEquals("toto", $response->getContent());
         $this->assertEquals(400, $response->getStatusCode());
         foreach ($content['email'] as $value) {
             $this->assertEquals("L'adresse email est requise.", $value);
