@@ -23,7 +23,9 @@ jobs:
     steps:
       - uses: shivammathur/setup-php@2cb9b829437ee246e9b3cac53555a39208ca6d28
         with:
-          php-version: '8.1'
+          extensions: imagick gd bcmath intl zip
+          tools: composer:v2
+          coverage: xdebug
       - uses: actions/checkout@v3
       - name: Copy .env.test.local
         run: php -r "file_exists('.env.test.local') || copy('.env.test', '.env.test.local');"
@@ -40,8 +42,12 @@ jobs:
       - name: Create Database
         run: |
           php bin/console doctrine:database:create --env=test
+          php bin/console doctrine:schema:update --env=test
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         env:
           DATABASE_URL: sqlite:///%kernel.project_dir%/data/database.sqlite
-        run: php bin/phpunit
+        run: |
+          vendor/bin/phpunit --coverage-clover=coverage.xml --log-junit=tests-report.xml
+          sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace@g' coverage.xml
+          sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace@g' tests-report.xml
 
