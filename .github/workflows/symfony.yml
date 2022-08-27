@@ -43,7 +43,13 @@ jobs:
         run: |
           php bin/console doctrine:database:create --env=test
           php bin/console doctrine:schema:create --env=test
-          php bin/phpunit --configuration phpunit.xml.dist --coverage-clover=coverage.xml --log-junit=tests-report.xml
+          php bin/phpunit --configuration phpunit.xml.dist --coverage-clover ./coverage.xml
           sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace@g' coverage.xml
           sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace@g' tests-report.xml
 
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODE_COV_TOKEN }}
+          files: ./coverage.xml
+          verbose: true
