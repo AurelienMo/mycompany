@@ -7,15 +7,18 @@ use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 abstract class AbstractEntity
 {
     #[Id()]
     #[Column(name: "id", type: "uuid")]
     #[GeneratedValue(strategy: "NONE")]
+    #[Groups("base")]
     protected UuidInterface $id;
 
     #[Column(name: "created_at", type: "datetime")]
+    #[Groups("base")]
     protected \DateTime $createdAt;
 
     public function __construct()

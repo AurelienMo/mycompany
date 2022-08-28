@@ -4,12 +4,14 @@ namespace MyCompany\Controller\Company;
 
 use MyCompany\Entity\Company;
 use MyCompany\Events\Company\CreateCompanyEvent;
+use MyCompany\Events\Company\GetCompanyEvent;
 use MyCompany\Events\ValidatorEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 
@@ -32,5 +34,16 @@ class CompanyController
         $event = $this->eventDispatcher->dispatch($event);
 
         return new Response($event->getResponse(), Response::HTTP_CREATED);
+    }
+
+    #[Route('', name: 'get_company_information', methods: ['GET'])]
+    public function getCompany(): Response
+    {
+        $user = $this->security->getUser();
+        if (is_null($user->getCompany())) {
+            throw new NotFoundHttpException("Aucune compagnie n'a été trouvée.");
+        }
+        $event = $this->eventDispatcher->dispatch(GetCompanyEvent::create($user));
+        return new Response($event->getResponse(), Response::HTTP_OK);
     }
 }
