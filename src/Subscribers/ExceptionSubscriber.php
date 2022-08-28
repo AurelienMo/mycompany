@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 class ExceptionSubscriber implements EventSubscriberInterface
@@ -29,6 +31,12 @@ class ExceptionSubscriber implements EventSubscriberInterface
             case $exception instanceof BadRequestException:
                 $statusCode = Response::HTTP_BAD_REQUEST;
                 $data = $exception->getErrors();
+                break;
+            case $exception instanceof NotFoundHttpException:
+                $statusCode = Response::HTTP_NOT_FOUND;
+                break;
+            case $exception instanceof AccessDeniedHttpException:
+                $statusCode = Response::HTTP_FORBIDDEN;
                 break;
         }
 
