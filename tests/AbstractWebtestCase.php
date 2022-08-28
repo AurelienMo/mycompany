@@ -3,6 +3,7 @@
 namespace MyCompany\Tests;
 
 use Doctrine\ORM\EntityManagerInterface;
+use MyCompany\Entity\UserAccount;
 use Nelmio\Alice\Loader\NativeLoader;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,7 +31,7 @@ abstract class AbstractWebtestCase extends WebTestCase
             [],
             [],
             [
-                'CONTENT_TYPE' => 'application/json'
+                'CONTENT_TYPE' => 'application/json',
             ]
         );
 
@@ -45,7 +46,7 @@ abstract class AbstractWebtestCase extends WebTestCase
             [],
             [],
             [
-                'CONTENT_TYPE' => 'application/json'
+                'CONTENT_TYPE' => 'application/json',
             ],
             json_encode($data)
         );
@@ -57,15 +58,34 @@ abstract class AbstractWebtestCase extends WebTestCase
     {
         $loader = new NativeLoader();
         $objectSet = $loader->loadFiles($paths);
-
         foreach ($objectSet->getObjects() as $object) {
             $this->entityManager->persist($object);
+            $this->entityManager->flush();
         }
-        $this->entityManager->flush();
     }
 
     protected function getContentResponse(string $responseBody): array
     {
         return json_decode($responseBody, true);
+    }
+
+    protected function authenticateUser(string $email, string $password): string
+    {
+        $response = $this->postRequest(
+            '/api/login_check',
+            [
+                'username' => 'john@doe.com',
+                'password' => '12345678'
+            ]
+        );
+        $content = $this->getContentResponse($response->getContent());
+
+        return $content['token'];
+    }
+
+    protected function logUser(string $email): void
+    {
+        $user = $this->entityManager->getRepository(UserAccount::class)->findOneBy(['email' => $email]);
+        $this->client->loginUser($user, 'api');
     }
 }

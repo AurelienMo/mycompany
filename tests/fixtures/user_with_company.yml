@@ -1,0 +1,11 @@
+MyCompany\Entity\Company:
+    company:
+        __construct: [null, null, "Une compagnie", true, null, "street number", "streetname", "13010", "Marseille"]
+
+
+MyCompany\Entity\UserAccount:
+    johndoe:
+        __construct: ["john@doe.com"]
+        __calls:
+            - defineCredentials: ["12345678"]
+            - attachCompany: ['@company']
