@@ -2,19 +2,43 @@
 
 namespace MyCompany\Tests\Controller\Company;
 
-use MyCompany\Entity\Company;
 use MyCompany\Entity\UserAccount;
 use MyCompany\Tests\AbstractWebtestCase;
 
-class CreateCompanyTest extends AbstractWebtestCase
+class UpdateCompanyTest extends AbstractWebtestCase
 {
-    public function testWithMissingRequiredField()
+    public function testWithUnauthorizedUser()
+    {
+        $response = $this->putRequest(
+            'api/companies',
+            []
+        );
+
+        $this->assertEquals(401, $response->getStatusCode());
+    }
+
+    public function testWithUserHaventCompany()
     {
         $this->loadFixtures([AbstractWebtestCase::FIXTURES_FOLDER.'user.yml']);
         $this->logUser('john@doe.com');
-        $response = $this->postRequest('/api/companies', []);
+        $response = $this->putRequest(
+            'api/companies',
+            []
+        );
         $content = $this->getContentResponse($response->getContent());
-        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertEquals("Aucune compagnie n'a été trouvée.", $content['message']);
+    }
+
+    public function testWithMissingRequiredField()
+    {
+        $this->loadFixtures([AbstractWebtestCase::FIXTURES_FOLDER.'user_with_company.yml']);
+        $this->logUser('john@doe.com');
+        $response = $this->putRequest(
+            'api/companies',
+            []
+        );
+        $content = $this->getContentResponse($response->getContent());
         $expectedResponse = [
             'streetNumber' => [
                 "Le numéro de rue est requis."
@@ -35,15 +59,16 @@ class CreateCompanyTest extends AbstractWebtestCase
                 "Le couple prénom nom ou nom de la compagnie doit être renseigné."
             ]
         ];
+        $this->assertEquals(400, $response->getStatusCode());
         $this->assertEquals($expectedResponse, $content);
     }
 
     public function testWithNoFirstnameLastnameAndNoCompanyName()
     {
-        $this->loadFixtures([AbstractWebtestCase::FIXTURES_FOLDER.'user.yml']);
+        $this->loadFixtures([AbstractWebtestCase::FIXTURES_FOLDER . 'user_with_company.yml']);
         $this->logUser('john@doe.com');
-        $response = $this->postRequest(
-            '/api/companies',
+        $response = $this->putRequest(
+            'api/companies',
             [
                 'streetNumber' => '1',
                 'streetName' => 'rue de la paix',
@@ -53,20 +78,20 @@ class CreateCompanyTest extends AbstractWebtestCase
             ]
         );
         $content = $this->getContentResponse($response->getContent());
-        $this->assertEquals(400, $response->getStatusCode());
         $expectedResponse = [
             '' => [
                 'Le couple prénom nom ou nom de la compagnie doit être renseigné.'
             ]
         ];
+        $this->assertEquals(400, $response->getStatusCode());
         $this->assertEquals($expectedResponse, $content);
     }
 
     public function testWithZipCodeTooLength()
     {
-        $this->loadFixtures([AbstractWebtestCase::FIXTURES_FOLDER.'user.yml']);
-        $this->logUser("john@doe.com");
-        $response = $this->postRequest(
+        $this->loadFixtures([AbstractWebtestCase::FIXTURES_FOLDER.'user_with_company.yml']);
+        $this->logUser('john@doe.com');
+        $response = $this->putRequest(
             '/api/companies',
             [
                 'streetNumber' => '1',
@@ -87,47 +112,11 @@ class CreateCompanyTest extends AbstractWebtestCase
         $this->assertEquals($expectedResponse, $content);
     }
 
-    public function testWithUserAlreadyHaveCompany()
+    public function testSuccessUpdateCompany()
     {
         $this->loadFixtures([AbstractWebtestCase::FIXTURES_FOLDER.'user_with_company.yml']);
-        $this->logUser("john@doe.com");
-        $response = $this->postRequest(
-            '/api/companies',
-            [
-                'streetNumber' => '1',
-                'streetName' => 'rue de la paix',
-                'zipCode' => '75000',
-                'city' => 'Paris',
-                'isFreelance' => false,
-                'companyName' => 'Une compagnie'
-            ]
-        );
-        $content = $this->getContentResponse($response->getContent());
-        $this->assertEquals(403, $response->getStatusCode());
-        $this->assertEquals("Vous êtes déjà associé à une compagnie.", $content['message']);
-    }
-
-    public function testWithUnauthorizedUser()
-    {
-        $response = $this->postRequest(
-            '/api/companies',
-            [
-                'streetNumber' => '1',
-                'streetName' => 'rue de la paix',
-                'zipCode' => '75000',
-                'city' => 'Paris',
-                'isFreelance' => false,
-                'companyName' => 'Une compagnie'
-            ]
-        );
-        $this->assertEquals(401, $response->getStatusCode());
-    }
-
-    public function testSuccessCreateCompany()
-    {
-        $this->loadFixtures([AbstractWebtestCase::FIXTURES_FOLDER.'user.yml']);
         $this->logUser('john@doe.com');
-        $response = $this->postRequest(
+        $response = $this->putRequest(
             '/api/companies',
             [
                 'streetNumber' => '1',
@@ -138,13 +127,14 @@ class CreateCompanyTest extends AbstractWebtestCase
                 'companyName' => 'Une compagnie'
             ]
         );
-        $content = $this->getContentResponse($response->getContent());
-        $this->assertEquals(201, $response->getStatusCode());
-        $this->assertArrayHasKey('id', $content);
-        $company = $this->entityManager->getRepository(Company::class)->findOneBy(['companyName' => 'Une compagnie']);
-        $this->assertInstanceOf(Company::class, $company);
+        $this->assertEquals(204, $response->getStatusCode());
         $user = $this->entityManager->getRepository(UserAccount::class)->findOneBy(['email' => 'john@doe.com']);
-        $this->assertInstanceOf(Company::class, $user->getCompany());
-        $this->assertEquals($company->getId()->toString(), $user->getCompany()->getId()->toString());
+        $company = $user->getCompany();
+        $this->assertEquals('1', $company->getStreetNumber());
+        $this->assertEquals('rue de la paix', $company->getStreetName());
+        $this->assertEquals('75000', $company->getZipCode());
+        $this->assertEquals('Paris', $company->getCity());
+        $this->assertEquals(false, $company->isFreelance());
+        $this->assertEquals('Une compagnie', $company->getCompanyName());
     }
 }

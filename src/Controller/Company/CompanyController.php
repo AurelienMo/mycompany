@@ -46,4 +46,17 @@ class CompanyController
         $event = $this->eventDispatcher->dispatch(GetCompanyEvent::create($user));
         return new Response($event->getResponse(), Response::HTTP_OK);
     }
+
+    #[Route('', name: 'update_company', methods: ['PUT'])]
+    public function updateCompany(Request $request): Response
+    {
+        if (is_null($this->security->getUser()->getCompany())) {
+            throw new NotFoundHttpException("Aucune compagnie n'a été trouvée.");
+        }
+        $event = CreateCompanyEvent::create(json_decode($request->getContent(), true));
+        $this->eventDispatcher->dispatch(ValidatorEvent::create($event));
+        $event = $this->eventDispatcher->dispatch($event);
+
+        return new Response($event->getResponse(), Response::HTTP_NO_CONTENT);
+    }
 }
