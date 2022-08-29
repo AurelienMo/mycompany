@@ -54,6 +54,22 @@ abstract class AbstractWebtestCase extends WebTestCase
         return $this->client->getResponse();
     }
 
+    protected function putRequest(string $uri, array $data): Response
+    {
+        $this->client->request(
+            'PUT',
+            $uri,
+            [],
+            [],
+            [
+                'CONTENT_TYPE' => 'application/json'
+            ],
+            json_encode($data)
+        );
+
+        return $this->client->getResponse();
+    }
+
     protected function loadFixtures(array $paths): void
     {
         $loader = new NativeLoader();
