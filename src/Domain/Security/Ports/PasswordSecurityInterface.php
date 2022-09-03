@@ -11,4 +11,6 @@ interface PasswordSecurityInterface
     public function generateToken(UserAccount $user): string;
 
     public function generateRefreshToken(UserAccount $user): string;
+
+    public function getCurrentUser(): ?UserAccount;
 }

@@ -22,30 +22,8 @@ class CompanySubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            CreateCompanyEvent::class => 'processCreateCompanyEvent',
             GetCompanyEvent::class => 'processGetCompanyInformation'
         ];
-    }
-
-    public function processCreateCompanyEvent(CreateCompanyEvent $event): void
-    {
-        $company = Company::create(
-            $event->getFirstname(),
-            $event->getLastname(),
-            $event->getCompanyName(),
-            $event->isFreelance(),
-            $event->getVatNumber(),
-            $event->getStreetNumber(),
-            $event->getStreetName(),
-            $event->getZipCode(),
-            $event->getCity()
-        );
-
-        $this->entityManager->persist($company);
-        $this->security->getUser()->attachCompany($company);
-        $this->entityManager->flush();
-
-        $event->setResponse(json_encode(['id' => $company->getId()->toString()]));
     }
 
     public function processGetCompanyInformation(GetCompanyEvent $event): void

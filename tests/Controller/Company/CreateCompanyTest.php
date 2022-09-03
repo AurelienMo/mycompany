@@ -28,35 +28,8 @@ class CreateCompanyTest extends AbstractWebtestCase
             'city' => [
                 "La ville est requise."
             ],
-            'isFreelance' => [
+            'freelance' => [
                 "Vous devez renseigner si vous êtes freelance ou non."
-            ],
-            '' => [
-                "Le couple prénom nom ou nom de la compagnie doit être renseigné."
-            ]
-        ];
-        $this->assertEquals($expectedResponse, $content);
-    }
-
-    public function testWithNoFirstnameLastnameAndNoCompanyName()
-    {
-        $this->loadFixtures([AbstractWebtestCase::FIXTURES_FOLDER.'user.yml']);
-        $this->logUser('john@doe.com');
-        $response = $this->postRequest(
-            '/api/companies',
-            [
-                'streetNumber' => '1',
-                'streetName' => 'rue de la paix',
-                'zipCode' => '75000',
-                'city' => 'Paris',
-                'isFreelance' => false
-            ]
-        );
-        $content = $this->getContentResponse($response->getContent());
-        $this->assertEquals(400, $response->getStatusCode());
-        $expectedResponse = [
-            '' => [
-                'Le couple prénom nom ou nom de la compagnie doit être renseigné.'
             ]
         ];
         $this->assertEquals($expectedResponse, $content);

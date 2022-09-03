@@ -2,13 +2,11 @@
 
 namespace MyCompany\Events\Company;
 
-use MyCompany\Validators\Company\FirstnameOrCompanyNameConstraint;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Contracts\EventDispatcher\Event;
 
-#[FirstnameOrCompanyNameConstraint]
 class CreateCompanyEvent extends Event
 {
     private string|null $firstname;

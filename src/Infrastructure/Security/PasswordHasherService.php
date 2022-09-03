@@ -7,13 +7,15 @@ use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use MyCompany\Domain\Entity\UserAccount;
 use MyCompany\Domain\Security\Ports\PasswordSecurityInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Core\Security;
 
 class PasswordHasherService implements PasswordSecurityInterface
 {
     public function __construct(
         private UserPasswordHasherInterface $passwordHasher,
         private JWTTokenManagerInterface $jwtTokenManager,
-        private RefreshTokenGeneratorInterface $refreshTokenManager
+        private RefreshTokenGeneratorInterface $refreshTokenManager,
+        private Security $security
     ) {}
 
     public function hash(UserAccount $user, string $password): string
@@ -29,5 +31,10 @@ class PasswordHasherService implements PasswordSecurityInterface
     public function generateRefreshToken(UserAccount $user): string
     {
         return $this->refreshTokenManager->createForUserWithTtl($user, 2592000)->getRefreshToken();
+    }
+
+    public function getCurrentUser(): ?UserAccount
+    {
+        return $this->security->getUser();
     }
 }

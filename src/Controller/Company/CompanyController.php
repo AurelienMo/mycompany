@@ -22,7 +22,7 @@ class CompanyController
         private Security $security
     ) {}
 
-    #[Route('', name: 'create_company', methods: ['POST'])]
+
     public function createCompany(Request $request): Response
     {
         if ($this->security->getUser()->getCompany() instanceof Company) {
