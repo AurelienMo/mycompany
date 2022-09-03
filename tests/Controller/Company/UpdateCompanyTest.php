@@ -23,7 +23,14 @@ class UpdateCompanyTest extends AbstractWebtestCase
         $this->logUser('john@doe.com');
         $response = $this->putRequest(
             'api/companies',
-            []
+            [
+                'streetNumber' => '1',
+                'streetName' => 'rue de la paix',
+                'zipCode' => '75000',
+                'city' => 'Paris',
+                'isFreelance' => false,
+                'companyName' => 'Une compagnie'
+            ]
         );
         $content = $this->getContentResponse($response->getContent());
         $this->assertEquals(404, $response->getStatusCode());
@@ -52,36 +59,9 @@ class UpdateCompanyTest extends AbstractWebtestCase
             'city' => [
                 "La ville est requise."
             ],
-            'isFreelance' => [
+            'freelance' => [
                 "Vous devez renseigner si vous êtes freelance ou non."
             ],
-            '' => [
-                "Le couple prénom nom ou nom de la compagnie doit être renseigné."
-            ]
-        ];
-        $this->assertEquals(400, $response->getStatusCode());
-        $this->assertEquals($expectedResponse, $content);
-    }
-
-    public function testWithNoFirstnameLastnameAndNoCompanyName()
-    {
-        $this->loadFixtures([AbstractWebtestCase::FIXTURES_FOLDER . 'user_with_company.yml']);
-        $this->logUser('john@doe.com');
-        $response = $this->putRequest(
-            'api/companies',
-            [
-                'streetNumber' => '1',
-                'streetName' => 'rue de la paix',
-                'zipCode' => '75000',
-                'city' => 'Paris',
-                'isFreelance' => false
-            ]
-        );
-        $content = $this->getContentResponse($response->getContent());
-        $expectedResponse = [
-            '' => [
-                'Le couple prénom nom ou nom de la compagnie doit être renseigné.'
-            ]
         ];
         $this->assertEquals(400, $response->getStatusCode());
         $this->assertEquals($expectedResponse, $content);
