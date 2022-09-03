@@ -5,46 +5,49 @@ namespace MyCompany\Domain\Entity;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
+use MyCompany\Domain\Company\Ports\UseCases\CreateCompanyDTOInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[Table(name: "company")]
 #[Entity]
 class Company extends AbstractEntity
 {
+    public const GROUP_SERIALIZATION_COMPANY_DETAIL = 'company:detail';
+
     #[Column(name: "firstname", type: "string", nullable: true)]
-    #[Groups("company:detail")]
+    #[Groups(self::GROUP_SERIALIZATION_COMPANY_DETAIL)]
     private string|null $firstname;
 
     #[Column(name: "lastname", type: "string", nullable: true)]
-    #[Groups("company:detail")]
+    #[Groups(self::GROUP_SERIALIZATION_COMPANY_DETAIL)]
     private string|null $lastname;
 
     #[Column(name: "company_name", type: "string", nullable: true)]
-    #[Groups("company:detail")]
+    #[Groups(self::GROUP_SERIALIZATION_COMPANY_DETAIL)]
     private string|null $companyName;
 
     #[Column(name: "is_freelance", type: "boolean")]
-    #[Groups("company:detail")]
+    #[Groups(self::GROUP_SERIALIZATION_COMPANY_DETAIL)]
     private bool $isFreelance;
 
     #[Column(name: "vat_number", type: "string", nullable: true)]
-    #[Groups("company:detail")]
+    #[Groups(self::GROUP_SERIALIZATION_COMPANY_DETAIL)]
     private string|null $vatNumber;
 
     #[Column(name: "street_number", type: "string")]
-    #[Groups("company:detail")]
+    #[Groups(self::GROUP_SERIALIZATION_COMPANY_DETAIL)]
     private string $streetNumber;
 
     #[Column(name: "street_name", type: "string")]
-    #[Groups("company:detail")]
+    #[Groups(self::GROUP_SERIALIZATION_COMPANY_DETAIL)]
     private string $streetName;
 
     #[Column(name: "zip_code", type: "string")]
-    #[Groups("company:detail")]
+    #[Groups(self::GROUP_SERIALIZATION_COMPANY_DETAIL)]
     private string $zipCode;
 
     #[Column(name: "city", type: "string")]
-    #[Groups("company:detail")]
+    #[Groups(self::GROUP_SERIALIZATION_COMPANY_DETAIL)]
     private string $city;
 
     public function __construct(
@@ -137,5 +140,18 @@ class Company extends AbstractEntity
     public function getCity(): string
     {
         return $this->city;
+    }
+
+    public function update(CreateCompanyDTOInterface $dto): void
+    {
+        $this->firstname = $dto->getFirstname();
+        $this->lastname = $dto->getLastname();
+        $this->companyName = $dto->getCompanyName();
+        $this->isFreelance = $dto->isFreelance();
+        $this->vatNumber = $dto->getVatNumber();
+        $this->streetNumber = $dto->getStreetNumber();
+        $this->streetName = $dto->getStreetName();
+        $this->zipCode = $dto->getZipCode();
+        $this->city = $dto->getCity();
     }
 }

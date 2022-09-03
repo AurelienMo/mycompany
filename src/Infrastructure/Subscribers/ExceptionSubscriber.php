@@ -1,6 +1,6 @@
 <?php
 
-namespace MyCompany\Subscribers;
+namespace MyCompany\Infrastructure\Subscribers;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -10,6 +10,7 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 class ExceptionSubscriber implements EventSubscriberInterface
 {
@@ -17,7 +18,6 @@ class ExceptionSubscriber implements EventSubscriberInterface
     {
         return [
             KernelEvents::EXCEPTION => 'processException',
-            KernelEvents::RESPONSE => 'processResponse'
         ];
     }
 
@@ -26,22 +26,24 @@ class ExceptionSubscriber implements EventSubscriberInterface
         $exception = $event->getThrowable();
         $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
         $data = ['message' => $exception->getMessage()];
-        switch (true) {
-            case $exception instanceof NotFoundHttpException:
-                $statusCode = Response::HTTP_NOT_FOUND;
-                break;
-            case $exception instanceof AccessDeniedHttpException:
-                $statusCode = Response::HTTP_FORBIDDEN;
-                break;
-        }
+
+        $this->debugDataDisplay($exception, $data);
 
         $event->setResponse(new JsonResponse($data, $statusCode));
     }
 
-    public function processResponse(ResponseEvent $event): void
+    private function debugDataDisplay(\Throwable $exception, array &$result): void
     {
-        $response = $event->getResponse();
-        $response->headers->set('Content-Type', 'application/json');
-        $event->setResponse($response);
+        if (getenv('APP_ENV') !== 'prod') {
+            $result['debug'] = $exception;
+            $result['trace'] = $exception->getTrace();
+
+            $previous = $exception->getPrevious();
+            if ($previous) {
+                $result['previous']            = [];
+                $result['previous']['message'] = $previous->getMessage();
+                $result['previous']['trace']   = $previous->getTrace();
+            }
+        }
     }
 }

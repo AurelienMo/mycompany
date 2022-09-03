@@ -1,6 +1,6 @@
 <?php
 
-namespace MyCompany\Subscribers;
+namespace MyCompany\Infrastructure\Subscribers;
 
 use Gesdinet\JWTRefreshTokenBundle\Generator\RefreshTokenGeneratorInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationFailureEvent;
