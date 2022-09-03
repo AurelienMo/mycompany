@@ -2,7 +2,7 @@
 
 namespace MyCompany\Events\Company;
 
-use MyCompany\Entity\UserAccount;
+use MyCompany\Domain\Entity\UserAccount;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class GetCompanyEvent extends Event

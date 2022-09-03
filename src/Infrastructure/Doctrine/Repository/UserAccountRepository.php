@@ -1,11 +1,11 @@
 <?php
 
-namespace MyCompany\Repository;
+namespace MyCompany\Infrastructure\Doctrine\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use MyCompany\Entity\UserAccount;
-use MyCompany\Repository\Interfaces\UserDALInterface;
+use MyCompany\Domain\Entity\UserAccount;
+use MyCompany\Domain\User\Ports\Database\UserDALInterface;
 
 class UserAccountRepository extends ServiceEntityRepository implements UserDALInterface
 {

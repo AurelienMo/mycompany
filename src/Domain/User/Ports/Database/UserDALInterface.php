@@ -1,8 +1,8 @@
 <?php
 
-namespace MyCompany\Repository\Interfaces;
+namespace MyCompany\Domain\User\Ports\Database;
 
-use MyCompany\Entity\UserAccount;
+use MyCompany\Domain\Entity\UserAccount;
 
 interface UserDALInterface
 {

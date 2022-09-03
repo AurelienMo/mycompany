@@ -2,8 +2,8 @@
 
 namespace MyCompany\Subscribers;
 
+use MyCompany\Domain\Core\Exceptions\BadRequestException;
 use MyCompany\Events\ValidatorEvent;
-use MyCompany\Exceptions\BadRequestException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 

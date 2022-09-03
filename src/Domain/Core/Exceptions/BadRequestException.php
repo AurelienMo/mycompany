@@ -1,6 +1,6 @@
 <?php
 
-namespace MyCompany\Exceptions;
+namespace MyCompany\Domain\Core\Exceptions;
 
 class BadRequestException extends \Exception
 {

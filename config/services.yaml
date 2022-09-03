@@ -22,8 +22,8 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
-    MyCompany\Controller\:
-        resource: '../src/Controller'
+    MyCompany\UI\Controllers\:
+        resource: '../src/UI/Controllers'
         public: true
         tags: [ 'controller.service_arguments' ]
 

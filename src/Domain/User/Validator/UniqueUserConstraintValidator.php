@@ -1,8 +1,8 @@
 <?php
 
-namespace MyCompany\Validators;
+namespace MyCompany\Domain\User\Validator;
 
-use MyCompany\Repository\Interfaces\UserDALInterface;
+use MyCompany\Domain\User\Ports\Database\UserDALInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 

@@ -1,4 +1,4 @@
-MyCompany\Entity\UserAccount:
+MyCompany\Domain\Entity\UserAccount:
     johndoe:
         __construct: ["john@doe.com"]
         __calls:

@@ -3,7 +3,7 @@
 namespace MyCompany\Tests;
 
 use Doctrine\ORM\EntityManagerInterface;
-use MyCompany\Entity\UserAccount;
+use MyCompany\Domain\Entity\UserAccount;
 use Nelmio\Alice\Loader\NativeLoader;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;

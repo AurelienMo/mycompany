@@ -2,7 +2,6 @@
 
 namespace MyCompany\Subscribers;
 
-use MyCompany\Exceptions\BadRequestException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,10 +27,6 @@ class ExceptionSubscriber implements EventSubscriberInterface
         $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
         $data = ['message' => $exception->getMessage()];
         switch (true) {
-            case $exception instanceof BadRequestException:
-                $statusCode = Response::HTTP_BAD_REQUEST;
-                $data = $exception->getErrors();
-                break;
             case $exception instanceof NotFoundHttpException:
                 $statusCode = Response::HTTP_NOT_FOUND;
                 break;

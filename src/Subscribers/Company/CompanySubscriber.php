@@ -3,7 +3,7 @@
 namespace MyCompany\Subscribers\Company;
 
 use Doctrine\ORM\EntityManagerInterface;
-use MyCompany\Entity\Company;
+use MyCompany\Domain\Entity\Company;
 use MyCompany\Events\Company\CreateCompanyEvent;
 use MyCompany\Events\Company\GetCompanyEvent;
 use MyCompany\Events\SerializationEvent;

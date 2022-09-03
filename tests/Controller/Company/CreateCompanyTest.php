@@ -2,8 +2,8 @@
 
 namespace MyCompany\Tests\Controller\Company;
 
-use MyCompany\Entity\Company;
-use MyCompany\Entity\UserAccount;
+use MyCompany\Domain\Entity\Company;
+use MyCompany\Domain\Entity\UserAccount;
 use MyCompany\Tests\AbstractWebtestCase;
 
 class CreateCompanyTest extends AbstractWebtestCase

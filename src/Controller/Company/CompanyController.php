@@ -2,12 +2,11 @@
 
 namespace MyCompany\Controller\Company;
 
-use MyCompany\Entity\Company;
+use MyCompany\Domain\Entity\Company;
 use MyCompany\Events\Company\CreateCompanyEvent;
 use MyCompany\Events\Company\GetCompanyEvent;
 use MyCompany\Events\ValidatorEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;

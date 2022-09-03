@@ -2,7 +2,7 @@
 
 namespace MyCompany\Tests\Controller\Company;
 
-use MyCompany\Entity\UserAccount;
+use MyCompany\Domain\Entity\UserAccount;
 use MyCompany\Tests\AbstractWebtestCase;
 
 class UpdateCompanyTest extends AbstractWebtestCase

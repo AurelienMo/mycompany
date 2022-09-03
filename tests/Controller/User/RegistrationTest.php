@@ -2,7 +2,7 @@
 
 namespace MyCompany\Tests\Controller\User;
 
-use MyCompany\Entity\UserAccount;
+use MyCompany\Domain\Entity\UserAccount;
 use MyCompany\Tests\AbstractWebtestCase;
 
 class RegistrationTest extends AbstractWebtestCase
