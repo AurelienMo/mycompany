@@ -57,13 +57,14 @@ class PaginationService
     {
         $totalPage = (int) ceil(count($paginator) / $paginatorValues->getLimit());
         $currentPage = $paginatorValues->getPage();
+        $totalElements = (int) $paginator->count();
         return [
             'Pagination-Page'  => $currentPage,
             'Pagination-Count' => (int) ceil(count($paginator) / $paginatorValues->getLimit()),
-            'Element-Total'    => (int) $paginator->count(),
+            'Element-Total'    => $totalElements,
             'Pagination-Limit' => (int) $paginatorValues->getLimit(),
             'Pagination-Has-Next' => $currentPage < $totalPage ? "1" : "0",
-            'Pagination-Has-Previous' => $currentPage > 1 ? "1" : "0",
+            'Pagination-Has-Previous' => $currentPage > 1 && $totalElements > 0 ? "1" : "0",
         ];
     }
 

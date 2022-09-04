@@ -79,15 +79,15 @@ class ListProductControllerTest extends AbstractWebtestCase
         $this->loadFixtures([AbstractWebtestCase::FIXTURES_FOLDER.'user_with_company.yml', AbstractWebtestCase::FIXTURES_FOLDER.'products.yml']);
         $this->logUser('john@doe.com');
 
-        $response = $this->getRequest('/api/products?limit=20&page=5&sort=unitPrice');
+        $response = $this->getRequest('/api/products?limit=20&page=5&sort=unitPrice&ref=toto');
         $content = $this->getContentResponse($response->getContent());
         $headers = $response->headers;
-        $this->assertCount(20, $content);
+        $this->assertCount(0, $content);
         $this->assertEquals(5, (int) $headers->get('pagination-page'));
-        $this->assertEquals(5, (int) $headers->get('pagination-count'));
+        $this->assertEquals(0, (int) $headers->get('pagination-count'));
         $this->assertEquals(20, (int) $headers->get('pagination-limit'));
-        $this->assertEquals(100, (int) $headers->get('element-total'));
+        $this->assertEquals(0, (int) $headers->get('element-total'));
         $this->assertFalse((bool) $headers->get('pagination-has-next'));
-        $this->assertTrue((bool) $headers->get('pagination-has-previous'));
+        $this->assertFalse((bool) $headers->get('pagination-has-previous'));
     }
 }
