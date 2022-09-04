@@ -17,4 +17,9 @@ class DatabaseAdapter implements DatabaseInterface
 
         $this->entityManager->flush();
     }
+
+    public function delete(object $entity): void
+    {
+        $this->entityManager->remove($entity);
+    }
 }
