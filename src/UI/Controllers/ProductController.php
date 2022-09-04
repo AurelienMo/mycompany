@@ -2,8 +2,13 @@
 
 namespace MyCompany\UI\Controllers;
 
+use MyCompany\Domain\Core\Exceptions\AccessDeniedException;
 use MyCompany\Domain\Core\Services\PaginationService;
+use MyCompany\Domain\Entity\Product;
+use MyCompany\Domain\Product\Exceptions\ProductNotFoundException;
+use MyCompany\Domain\Product\UseCases\GetProductUseCase;
 use MyCompany\Domain\Product\UseCases\ListProductUseCase;
+use MyCompany\UI\Adapters\Http\Product\GetProductHttp;
 use MyCompany\UI\Adapters\Http\Product\ListProductsHttp;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,9 +30,26 @@ class ProductController
         $result = $useCase->execute(new ListProductsHttp($paginatorValues, $request->query->all()));
 
         return new JsonResponse(
-            $this->normalizer->normalize($result, 'json', ['groups' => ['base', 'list:products']]),
+            $this->normalizer->normalize($result, 'json', ['groups' => ['base', Product::GROUPS_SERIALIZATION_LIST]]),
             Response::HTTP_OK,
             PaginationService::buildPaginationHeaders($result, $paginatorValues)
+        );
+    }
+
+    #[Route("/{id}", name: 'get_product', methods: ['GET'])]
+    public function getProduct(string $id, GetProductUseCase $useCase): JsonResponse
+    {
+        try {
+            $product = $useCase->execute(new GetProductHttp($id));
+        } catch (ProductNotFoundException $e) {
+            return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        } catch (AccessDeniedException $e) {
+            return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_FORBIDDEN);
+        }
+
+        return new JsonResponse(
+            $this->normalizer->normalize($product, 'json', ['groups' => ['base', Product::GROUPS_SERIALIZATION_DETAIL]]),
+            Response::HTTP_OK
         );
     }
 }

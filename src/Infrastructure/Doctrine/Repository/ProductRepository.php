@@ -30,4 +30,13 @@ class ProductRepository extends ServiceEntityRepository implements ProductDALInt
 
         return new Paginator($qb);
     }
+
+    public function getProduct(string $id): ?Product
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

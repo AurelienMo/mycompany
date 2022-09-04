@@ -13,16 +13,19 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[Entity]
 class Product extends AbstractEntity
 {
+    public const GROUPS_SERIALIZATION_LIST = "list:products";
+    public const GROUPS_SERIALIZATION_DETAIL = "detail:product";
+
     #[Column(type: 'string')]
-    #[Groups("list:products")]
+    #[Groups([self::GROUPS_SERIALIZATION_LIST, self::GROUPS_SERIALIZATION_DETAIL])]
     private string $ref;
 
     #[Column(type: 'string')]
-    #[Groups("list:products")]
+    #[Groups([self::GROUPS_SERIALIZATION_LIST, self::GROUPS_SERIALIZATION_DETAIL])]
     private string $description;
 
     #[Column(type: 'float')]
-    #[Groups("list:products")]
+    #[Groups([self::GROUPS_SERIALIZATION_LIST, self::GROUPS_SERIALIZATION_DETAIL])]
     private float $unitPrice;
 
     #[ManyToOne(targetEntity: Company::class)]
