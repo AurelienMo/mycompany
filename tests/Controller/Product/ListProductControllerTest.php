@@ -8,7 +8,7 @@ class ListProductControllerTest extends AbstractWebtestCase
 {
     public function testWithUnauthorizedUser()
     {
-        $response = $this->getRequest('/api/products',);
+        $response = $this->getRequest('/api/products');
         $this->assertEquals(401, $response->getStatusCode());
     }
 
