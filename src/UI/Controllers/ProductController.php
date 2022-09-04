@@ -3,11 +3,14 @@
 namespace MyCompany\UI\Controllers;
 
 use MyCompany\Domain\Core\Exceptions\AccessDeniedException;
+use MyCompany\Domain\Core\Exceptions\BadRequestException;
 use MyCompany\Domain\Core\Services\PaginationService;
 use MyCompany\Domain\Entity\Product;
 use MyCompany\Domain\Product\Exceptions\ProductNotFoundException;
+use MyCompany\Domain\Product\UseCases\CreateProductUseCase;
 use MyCompany\Domain\Product\UseCases\GetProductUseCase;
 use MyCompany\Domain\Product\UseCases\ListProductUseCase;
+use MyCompany\UI\Adapters\Http\Product\CreateProductHttp;
 use MyCompany\UI\Adapters\Http\Product\GetProductHttp;
 use MyCompany\UI\Adapters\Http\Product\ListProductsHttp;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -51,5 +54,19 @@ class ProductController
             $this->normalizer->normalize($product, 'json', ['groups' => ['base', Product::GROUPS_SERIALIZATION_DETAIL]]),
             Response::HTTP_OK
         );
+    }
+
+    #[Route("", name: "create_product", methods: ["POST"])]
+    public function create(Request $request, CreateProductUseCase $useCase): JsonResponse
+    {
+        try {
+            $data = $useCase->execute(new CreateProductHttp(json_decode($request->getContent(), true)));
+        } catch (AccessDeniedException $e) {
+            return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_FORBIDDEN);
+        } catch (BadRequestException $e) {
+            return new JsonResponse($e->getErrors(), Response::HTTP_BAD_REQUEST);
+        }
+
+        return new JsonResponse($data, Response::HTTP_CREATED);
     }
 }
