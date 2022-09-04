@@ -70,6 +70,21 @@ abstract class AbstractWebtestCase extends WebTestCase
         return $this->client->getResponse();
     }
 
+    protected function delete(string $uri): Response
+    {
+        $this->client->request(
+            'DELETE',
+            $uri,
+            [],
+            [],
+            [
+                'CONTENT_TYPE' => 'application/json'
+            ]
+        );
+
+        return $this->client->getResponse();
+    }
+
     protected function loadFixtures(array $paths): void
     {
         $loader = new NativeLoader();

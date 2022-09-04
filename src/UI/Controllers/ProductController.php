@@ -8,6 +8,7 @@ use MyCompany\Domain\Core\Services\PaginationService;
 use MyCompany\Domain\Entity\Product;
 use MyCompany\Domain\Product\Exceptions\ProductNotFoundException;
 use MyCompany\Domain\Product\UseCases\CreateProductUseCase;
+use MyCompany\Domain\Product\UseCases\DeleteProductUseCase;
 use MyCompany\Domain\Product\UseCases\GetProductUseCase;
 use MyCompany\Domain\Product\UseCases\ListProductUseCase;
 use MyCompany\UI\Adapters\Http\Product\CreateProductHttp;
@@ -68,5 +69,22 @@ class ProductController
         }
 
         return new JsonResponse($data, Response::HTTP_CREATED);
+    }
+
+    #[Route("/{id}", name: "delete_product", methods: ["DELETE"])]
+    public function delete(string $id, DeleteProductUseCase $useCase): JsonResponse
+    {
+        try {
+            $useCase->execute(new GetProductHttp($id));
+        } catch (AccessDeniedException $e) {
+            return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_FORBIDDEN);
+        } catch (ProductNotFoundException $e) {
+            return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        }
+
+        return new JsonResponse(
+            null,
+            Response::HTTP_NO_CONTENT
+        );
     }
 }
