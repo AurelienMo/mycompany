@@ -64,9 +64,4 @@ class UserAccount extends AbstractEntity implements UserInterface, PasswordAuthe
     {
         $this->company = $company;
     }
-
-    public function getEmail(): string
-    {
-        return $this->email;
-    }
 }
