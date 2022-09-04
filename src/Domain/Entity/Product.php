@@ -20,7 +20,7 @@ class Product extends AbstractEntity
     #[Groups([self::GROUPS_SERIALIZATION_LIST, self::GROUPS_SERIALIZATION_DETAIL])]
     private string $ref;
 
-    #[Column(type: 'string')]
+    #[Column(type: 'text')]
     #[Groups([self::GROUPS_SERIALIZATION_LIST, self::GROUPS_SERIALIZATION_DETAIL])]
     private string $description;
 
@@ -43,6 +43,16 @@ class Product extends AbstractEntity
         $this->description = $description;
         $this->unitPrice = $unitPrice;
         parent::__construct();
+    }
+
+    public static function create(string $ref, string $description, float $unitPrice, Company $company): Product
+    {
+        return new self(
+            $company,
+            $ref,
+            $description,
+            $unitPrice
+        );
     }
 
     /**
