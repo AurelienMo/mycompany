@@ -1,6 +1,8 @@
 MyCompany\Domain\Entity\Company:
     company:
         __construct: [null, null, "Une compagnie", true, null, "street number", "streetname", "13010", "Marseille"]
+    company_foobar:
+        __construct: [null, null, "Une compagnie foobar", true, null, "street number", "streetname", "13010", "Marseille"]
 
 
 MyCompany\Domain\Entity\UserAccount:
@@ -9,3 +11,8 @@ MyCompany\Domain\Entity\UserAccount:
         __calls:
             - defineCredentials: ["12345678"]
             - attachCompany: ['@company']
+    foobar:
+        __construct: [ "foo@bar.com" ]
+        __calls:
+            - defineCredentials: [ "12345678" ]
+            - attachCompany: [ '@company_foobar' ]

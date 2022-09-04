@@ -2,6 +2,7 @@
 
 namespace MyCompany\Infrastructure\Subscribers;
 
+use MyCompany\Domain\Core\Exceptions\InvalidPaginationArgumentException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,6 +27,11 @@ class ExceptionSubscriber implements EventSubscriberInterface
         $exception = $event->getThrowable();
         $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
         $data = ['message' => $exception->getMessage()];
+
+        if ($exception instanceof InvalidPaginationArgumentException) {
+            $data['message'] = $exception->getMessage();
+            $statusCode = Response::HTTP_BAD_REQUEST;
+        }
 
         $this->debugDataDisplay($exception, $data);
 

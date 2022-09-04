@@ -47,7 +47,7 @@ class UserAccount extends AbstractEntity implements UserInterface, PasswordAuthe
 
     public function getUserIdentifier(): string
     {
-        return 'email';
+        return $this->email;
     }
 
     public function defineCredentials(string $password): void
@@ -63,5 +63,10 @@ class UserAccount extends AbstractEntity implements UserInterface, PasswordAuthe
     public function attachCompany(Company $company): void
     {
         $this->company = $company;
+    }
+
+    public function getEmail(): string
+    {
+        return $this->email;
     }
 }
