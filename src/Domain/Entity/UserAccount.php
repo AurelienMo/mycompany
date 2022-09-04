@@ -47,7 +47,7 @@ class UserAccount extends AbstractEntity implements UserInterface, PasswordAuthe
 
     public function getUserIdentifier(): string
     {
-        return 'email';
+        return $this->email;
     }
 
     public function defineCredentials(string $password): void
