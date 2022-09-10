@@ -22,7 +22,14 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
-    MyCompany\Controller\:
-        resource: '../src/Controller'
+    MyCompany\UI\Controllers\:
+        resource: '../src/UI/Controllers'
         public: true
         tags: [ 'controller.service_arguments' ]
+
+    authentication_event:
+        class: MyCompany\Infrastructure\Subscribers\AuthenticationSubscribers
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: onSuccess }
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_expired, method: onJwtExpired }
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_failure, method: onInvalidCredentials }

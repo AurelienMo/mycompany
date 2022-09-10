@@ -1,0 +1,3 @@
+MyCompany\Domain\Entity\Product:
+    productsjohndoe{1..100}:
+        __construct: ['@company', '<word()>', '<sentence(3)>', '<randomFloat(1, 1, 100)>']
