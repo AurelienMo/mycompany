@@ -1,0 +1,70 @@
+version: "3.8"
+services:
+  db:
+    container_name: mycompany_api_database
+    image: percona/percona-server
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mycompany
+      MYSQL_USER: mycompany
+      MYSQL_PASSWORD: mycompanydev
+    ports:
+      - '3306:3306'
+    volumes:
+      - mycompany_api_data:/var/lib/mysql
+    command: mysqld --sql_mode=""
+    restart: on-failure
+    networks:
+      - mycompany_api
+
+  www:
+    build:
+      context: php
+      dockerfile: Dockerfile
+      args:
+        web_vhost: https://api.dev.mycompany.fr
+    container_name: mycompany_api_www
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./php/vhosts:/etc/apache2/sites-enabled
+      - ${API_FOLDER}:/var/www:rw
+      - ./logs:/var/log/apache2
+#      - vendor:/var/www/vendor:rw
+      - cache:/var/www/var/cache:rw
+      - log:/var/www/var/log:rw
+      - ./php/conf.ini/custom-php.ini:/usr/local/etc/php/conf.d/custom-php.ini:delegated
+    restart: on-failure
+    environment:
+      VIRTUAL_HOST: https://api.dev.mycompany.fr
+    networks:
+      - mycompany_api
+
+  composer:
+    image: composer:latest
+    container_name: mycompany_api_composer
+    volumes:
+      - ${API_FOLDER}:/var/www:z
+      - vendor:/var/www/vendor
+      - cache:/var/www/var/cache
+      - log:/var/www/var/log
+    working_dir: /var/www
+    command: sh -c "composer install --ignore-platform-reqs --no-scripts"
+    depends_on:
+      - www
+    networks:
+      - mycompany_api
+
+volumes:
+  mycompany_api_data:
+    driver: local
+  vendor:
+    name: mycompany_api_vendor
+  cache:
+    name: mycompany_api_cache
+  log:
+    name: mycompany_api_log
+
+networks:
+  mycompany_api:
