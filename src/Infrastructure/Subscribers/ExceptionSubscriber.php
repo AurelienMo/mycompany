@@ -56,6 +56,8 @@ class ExceptionSubscriber implements EventSubscriberInterface
                 $data = $exception->getErrors();
                 break;
             default;
+                $data = ['message' => $exception->getMessage()];
+                break;
 
         }
 
@@ -67,13 +69,12 @@ class ExceptionSubscriber implements EventSubscriberInterface
             $data['message'] = $exception->getMessage();
             $statusCode = Response::HTTP_BAD_REQUEST;
         }
-
         $this->debugDataDisplay($exception, $data);
 
         $event->setResponse(new JsonResponse($data, $statusCode));
     }
 
-    private function debugDataDisplay(\Throwable $exception, array &$result): void
+    private function debugDataDisplay(\Throwable $exception, ?array &$result): void
     {
         if (getenv('APP_ENV') !== 'prod' && getenv('APP_ENV')) {
             $result['debug'] = $exception;
