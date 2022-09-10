@@ -2,6 +2,8 @@
 
 namespace MyCompany\Domain\Company\Exceptions;
 
-class CompanyNotFoundException extends \Exception
+use MyCompany\Domain\Core\Exceptions\NotFoundException;
+
+class CompanyNotFoundException extends NotFoundException
 {
 }

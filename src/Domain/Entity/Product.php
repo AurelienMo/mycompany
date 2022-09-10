@@ -86,4 +86,14 @@ class Product extends AbstractEntity
     {
         return $this->company;
     }
+
+    public function update(
+        string $ref,
+        string $description,
+        float $unitPrice
+    ) {
+        $this->ref = $ref;
+        $this->description = $description;
+        $this->unitPrice = $unitPrice;
+    }
 }

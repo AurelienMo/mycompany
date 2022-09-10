@@ -11,9 +11,11 @@ use MyCompany\Domain\Product\UseCases\CreateProductUseCase;
 use MyCompany\Domain\Product\UseCases\DeleteProductUseCase;
 use MyCompany\Domain\Product\UseCases\GetProductUseCase;
 use MyCompany\Domain\Product\UseCases\ListProductUseCase;
+use MyCompany\Domain\Product\UseCases\UpdateProductUseCase;
 use MyCompany\UI\Adapters\Http\Product\CreateProductHttp;
 use MyCompany\UI\Adapters\Http\Product\GetProductHttp;
 use MyCompany\UI\Adapters\Http\Product\ListProductsHttp;
+use MyCompany\UI\Adapters\Http\Product\UpdateProduct;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,6 +25,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 #[Route('/products')]
 class ProductController
 {
+    private const ID = '/{id}';
     public function __construct(private NormalizerInterface $normalizer) {}
 
     #[Route('', name: 'list_products', methods: ['GET'])]
@@ -40,16 +43,10 @@ class ProductController
         );
     }
 
-    #[Route("/{id}", name: 'get_product', methods: ['GET'])]
+    #[Route(self::ID, name: 'get_product', methods: ['GET'])]
     public function getProduct(string $id, GetProductUseCase $useCase): JsonResponse
     {
-        try {
-            $product = $useCase->execute(new GetProductHttp($id));
-        } catch (ProductNotFoundException $e) {
-            return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
-        } catch (AccessDeniedException $e) {
-            return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_FORBIDDEN);
-        }
+        $product = $useCase->execute(new GetProductHttp($id));
 
         return new JsonResponse(
             $this->normalizer->normalize($product, 'json', ['groups' => ['base', Product::GROUPS_SERIALIZATION_DETAIL]]),
@@ -60,31 +57,27 @@ class ProductController
     #[Route("", name: "create_product", methods: ["POST"])]
     public function create(Request $request, CreateProductUseCase $useCase): JsonResponse
     {
-        try {
-            $data = $useCase->execute(new CreateProductHttp(json_decode($request->getContent(), true)));
-        } catch (AccessDeniedException $e) {
-            return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_FORBIDDEN);
-        } catch (BadRequestException $e) {
-            return new JsonResponse($e->getErrors(), Response::HTTP_BAD_REQUEST);
-        }
+        $data = $useCase->execute(new CreateProductHttp(json_decode($request->getContent(), true)));
 
         return new JsonResponse($data, Response::HTTP_CREATED);
     }
 
-    #[Route("/{id}", name: "delete_product", methods: ["DELETE"])]
+    #[Route(self::ID, name: "delete_product", methods: ["DELETE"])]
     public function delete(string $id, DeleteProductUseCase $useCase): JsonResponse
     {
-        try {
-            $useCase->execute(new GetProductHttp($id));
-        } catch (AccessDeniedException $e) {
-            return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_FORBIDDEN);
-        } catch (ProductNotFoundException $e) {
-            return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
-        }
+        $useCase->execute(new GetProductHttp($id));
 
         return new JsonResponse(
             null,
             Response::HTTP_NO_CONTENT
         );
+    }
+
+    #[Route(self::ID, name: "update_product", methods: ["PUT"])]
+    public function update(Request $request, string $id, UpdateProductUseCase $useCase): JsonResponse
+    {
+        $useCase->execute(new UpdateProduct($id, $request->toArray()));
+
+        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 }

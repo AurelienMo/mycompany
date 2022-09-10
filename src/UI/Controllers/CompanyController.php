@@ -23,15 +23,7 @@ class CompanyController
     #[Route('', name: 'create_company', methods: ['POST', 'PUT'])]
     public function createOrUpdateCompany(Request $request, CreateCompanyUseCase $useCase): JsonResponse
     {
-        try {
-            $data = $useCase->execute(new CreateCompanyHttp($request->toArray()), $request->getMethod());
-        } catch (AccessDeniedException $e) {
-            return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_FORBIDDEN);
-        } catch (BadRequestException $e) {
-            return new JsonResponse($e->getErrors(), Response::HTTP_BAD_REQUEST);
-        } catch (CompanyNotFoundException $e) {
-            return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
-        }
+        $data = $useCase->execute(new CreateCompanyHttp($request->toArray()), $request->getMethod());
 
         return new JsonResponse(
             $request->getMethod() === 'POST' ? $data : null,
@@ -42,11 +34,7 @@ class CompanyController
     #[Route('', name: 'get_company_information', methods: ['GET'])]
     public function getCompany(GetCompanyUseCase $useCase): JsonResponse
     {
-        try {
-            $data = $useCase->execute();
-        } catch (CompanyNotFoundException $e) {
-            return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
-        }
+        $data = $useCase->execute();
 
         return new JsonResponse(
             $this->normalizer->normalize(

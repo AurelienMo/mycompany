@@ -2,6 +2,8 @@
 
 namespace MyCompany\Domain\Product\Exceptions;
 
-class ProductNotFoundException extends \Exception
+use MyCompany\Domain\Core\Exceptions\NotFoundException;
+
+class ProductNotFoundException extends NotFoundException
 {
 }

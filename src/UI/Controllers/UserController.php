@@ -17,11 +17,7 @@ class UserController
         Request $request,
         RegistrationUseCase $registrationUseCase
     ): JsonResponse {
-        try {
-            $data = $registrationUseCase->execute(new RegistrationUserHttp($request->toArray()));
-        } catch (BadRequestException $exception) {
-            return new JsonResponse($exception->getErrors(), Response::HTTP_BAD_REQUEST);
-        }
+        $data = $registrationUseCase->execute(new RegistrationUserHttp($request->toArray()));
 
         return new JsonResponse($data, Response::HTTP_CREATED);
     }
