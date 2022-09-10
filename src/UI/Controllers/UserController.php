@@ -3,12 +3,14 @@
 namespace MyCompany\UI\Controllers;
 
 use MyCompany\Domain\Core\Exceptions\BadRequestException;
+use MyCompany\Domain\User\UseCases\GetMeUseCase;
 use MyCompany\Domain\User\UseCases\RegistrationUseCase;
 use MyCompany\UI\Adapters\Http\User\RegistrationUserHttp;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class UserController
 {
@@ -20,5 +22,14 @@ class UserController
         $data = $registrationUseCase->execute(new RegistrationUserHttp($request->toArray()));
 
         return new JsonResponse($data, Response::HTTP_CREATED);
+    }
+
+    #[Route("/me", name: "get_user_me", methods: ["GET"])]
+    public function userMe(NormalizerInterface $normalizer, GetMeUseCase $useCase): JsonResponse
+    {
+        $user = $useCase->execute();
+        return new JsonResponse(
+            $normalizer->normalize($user, 'json', ['groups' => ['base', 'user:me']])
+        );
     }
 }

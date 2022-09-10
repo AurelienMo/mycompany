@@ -15,39 +15,39 @@ class Company extends AbstractEntity
     public const GROUP_SERIALIZATION_COMPANY_DETAIL = 'company:detail';
 
     #[Column(name: "firstname", type: "string", nullable: true)]
-    #[Groups(self::GROUP_SERIALIZATION_COMPANY_DETAIL)]
+    #[Groups([self::GROUP_SERIALIZATION_COMPANY_DETAIL, UserAccount::GROUP_SERIALIZATION_USER_ME])]
     private string|null $firstname;
 
     #[Column(name: "lastname", type: "string", nullable: true)]
-    #[Groups(self::GROUP_SERIALIZATION_COMPANY_DETAIL)]
+    #[Groups([self::GROUP_SERIALIZATION_COMPANY_DETAIL, UserAccount::GROUP_SERIALIZATION_USER_ME])]
     private string|null $lastname;
 
     #[Column(name: "company_name", type: "string", nullable: true)]
-    #[Groups(self::GROUP_SERIALIZATION_COMPANY_DETAIL)]
+    #[Groups([self::GROUP_SERIALIZATION_COMPANY_DETAIL, UserAccount::GROUP_SERIALIZATION_USER_ME])]
     private string|null $companyName;
 
     #[Column(name: "is_freelance", type: "boolean")]
-    #[Groups(self::GROUP_SERIALIZATION_COMPANY_DETAIL)]
+    #[Groups([self::GROUP_SERIALIZATION_COMPANY_DETAIL, UserAccount::GROUP_SERIALIZATION_USER_ME])]
     private bool $isFreelance;
 
     #[Column(name: "vat_number", type: "string", nullable: true)]
-    #[Groups(self::GROUP_SERIALIZATION_COMPANY_DETAIL)]
+    #[Groups([self::GROUP_SERIALIZATION_COMPANY_DETAIL, UserAccount::GROUP_SERIALIZATION_USER_ME])]
     private string|null $vatNumber;
 
     #[Column(name: "street_number", type: "string")]
-    #[Groups(self::GROUP_SERIALIZATION_COMPANY_DETAIL)]
+    #[Groups([self::GROUP_SERIALIZATION_COMPANY_DETAIL, UserAccount::GROUP_SERIALIZATION_USER_ME])]
     private string $streetNumber;
 
     #[Column(name: "street_name", type: "string")]
-    #[Groups(self::GROUP_SERIALIZATION_COMPANY_DETAIL)]
+    #[Groups([self::GROUP_SERIALIZATION_COMPANY_DETAIL, UserAccount::GROUP_SERIALIZATION_USER_ME])]
     private string $streetName;
 
     #[Column(name: "zip_code", type: "string")]
-    #[Groups(self::GROUP_SERIALIZATION_COMPANY_DETAIL)]
+    #[Groups([self::GROUP_SERIALIZATION_COMPANY_DETAIL, UserAccount::GROUP_SERIALIZATION_USER_ME])]
     private string $zipCode;
 
     #[Column(name: "city", type: "string")]
-    #[Groups(self::GROUP_SERIALIZATION_COMPANY_DETAIL)]
+    #[Groups([self::GROUP_SERIALIZATION_COMPANY_DETAIL, UserAccount::GROUP_SERIALIZATION_USER_ME])]
     private string $city;
 
     public function __construct(

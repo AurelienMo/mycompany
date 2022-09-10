@@ -9,12 +9,16 @@ use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[Table(name: "user_account")]
 #[Entity]
 class UserAccount extends AbstractEntity implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    public const GROUP_SERIALIZATION_USER_ME = "user:me";
+
     #[Column(name: "email", type: "string")]
+    #[Groups(self::GROUP_SERIALIZATION_USER_ME)]
     private string $email;
 
     #[Column(name: "password", type: "string")]
@@ -22,6 +26,7 @@ class UserAccount extends AbstractEntity implements UserInterface, PasswordAuthe
 
     #[ManyToOne(targetEntity: Company::class)]
     #[JoinColumn(name: "company_id", referencedColumnName: "id", nullable: true)]
+    #[Groups("user:me")]
     private Company|null $company = null;
 
     public function __construct(string $email)
@@ -63,5 +68,13 @@ class UserAccount extends AbstractEntity implements UserInterface, PasswordAuthe
     public function attachCompany(Company $company): void
     {
         $this->company = $company;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail(): string
+    {
+        return $this->email;
     }
 }
