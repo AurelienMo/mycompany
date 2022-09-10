@@ -2,6 +2,7 @@
 
 namespace MyCompany\Infrastructure\Subscribers;
 
+use Doctrine\ORM\Query\QueryException;
 use MyCompany\Domain\Core\Exceptions\InvalidPaginationArgumentException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -29,6 +30,10 @@ class ExceptionSubscriber implements EventSubscriberInterface
         $data = ['message' => $exception->getMessage()];
 
         if ($exception instanceof InvalidPaginationArgumentException) {
+            $data['message'] = $exception->getMessage();
+            $statusCode = Response::HTTP_BAD_REQUEST;
+        }
+        if ($exception instanceof QueryException) {
             $data['message'] = $exception->getMessage();
             $statusCode = Response::HTTP_BAD_REQUEST;
         }
