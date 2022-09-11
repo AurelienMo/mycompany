@@ -10,6 +10,7 @@ use MyCompany\Domain\Core\Ports\DatabaseInterface;
 use MyCompany\Domain\Core\Services\ValidatorService;
 use MyCompany\Domain\Entity\Client;
 use MyCompany\Domain\Security\Ports\PasswordSecurityInterface;
+use MyCompany\Domain\Services\EncryptCipherService;
 
 class CreateClientUseCase
 {
@@ -17,7 +18,8 @@ class CreateClientUseCase
         private PasswordSecurityInterface $passwordSecurity,
         private CompanyDALInterface $companyDal,
         private ValidatorService $validatorService,
-        private DatabaseInterface $database
+        private DatabaseInterface $database,
+        private EncryptCipherService $encryptCipher
     ) {}
 
     public function execute(CreateClientDTOInterface $dto)
@@ -33,13 +35,13 @@ class CreateClientUseCase
 
         $client = new Client(
             $company,
-            $dto->getFirstname(),
-            $dto->getLastname(),
-            $dto->getEmail(),
-            $dto->getStreetNumber(),
-            $dto->getStreetName(),
-            $dto->getZipCode(),
-            $dto->getCity()
+            $this->encryptCipher->encrypt($dto->getFirstname()),
+            $this->encryptCipher->encrypt($dto->getLastname()),
+            $this->encryptCipher->encrypt($dto->getEmail()),
+            $dto->getStreetNumber() ? $this->encryptCipher->encrypt($dto->getStreetNumber()) : null,
+            $this->encryptCipher->encrypt($dto->getStreetName()),
+            $this->encryptCipher->encrypt($dto->getZipCode()),
+            $this->encryptCipher->encrypt($dto->getCity())
         );
 
         $this->database->save($client);
